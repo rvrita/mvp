@@ -1,0 +1,82 @@
+body {
+  font-family: 'Raleway', sans-serif;
+  padding: 0;
+  margin: 0;
+  font-size: 22px;
+  background-color: blanchedalmond;
+  /* color: #3c3c3c; */
+}
+
+#app {
+  padding: 30px 0;
+  width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.board {
+  /* width: 600px; */
+  margin: 100px auto 0;
+  padding: 20px;
+  border-spacing: 15px;
+  background-color: tan;
+  border-radius: 5px;
+  border: 2px solid white;
+}
+
+.card {
+  width: 140px;
+  height: 70px;
+  border: 2px solid white;
+  border-radius: 10px;
+  background-color: blanchedalmond;
+}
+
+.infoboard {
+  margin-top: 70px;
+
+}
+
+.revealbutton {
+  font-family: inherit;
+  background-color: tan;
+  cursor: pointer;
+  border: 2px solid white;
+  padding: 10px 20px;
+  margin-top: 30px;
+  border-radius: 5px;
+  font-size: 18px;
+}
+
+.blue {
+  background-color: cornflowerblue;
+}
+
+.red {
+  background-color: tomato;
+}
+
+.black {
+  background-color: black;
+  color: white;
+}
+
+.yellow {
+  background-color: gold;
+}
+
+.blueb {
+  border: 2px solid cornflowerblue;
+}
+
+.redb {
+  border: 2px solid tomato;
+}
+
+.blackb {
+  border: 2px solid black;
+}
+
+.yellowb {
+  border: 2px solid gold;
+}
