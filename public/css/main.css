@@ -49,11 +49,11 @@ body {
 }
 
 .blue {
-  background-color: cornflowerblue;
+  background-color: lightblue;
 }
 
 .red {
-  background-color: tomato;
+  background-color: lightcoral;
 }
 
 .black {
@@ -62,7 +62,7 @@ body {
 }
 
 .yellow {
-  background-color: gold;
+  background-color: rgb(255, 255, 138);
 }
 
 .blueb {
@@ -78,5 +78,5 @@ body {
 }
 
 .yellowb {
-  border: 2px solid gold;
+  border: 2px solid yellow;
 }

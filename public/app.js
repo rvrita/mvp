@@ -16,11 +16,16 @@ var Card = function (_React$Component) {
   }
 
   _createClass(Card, [{
-    key: "render",
+    key: 'render',
     value: function render() {
+      var classes = 'card';
+      console.log('in card', this.props.isRevealed);
+      if (this.props.isRevealed) {
+        classes += ' ' + this.props.color + 'b';
+      }
       return React.createElement(
-        "td",
-        { className: "card" },
+        'td',
+        { className: classes },
         this.props.value
       );
     }
@@ -39,20 +44,25 @@ var Board = function (_React$Component2) {
   }
 
   _createClass(Board, [{
-    key: "render",
+    key: 'render',
     value: function render() {
+      var _this3 = this;
+
       return React.createElement(
-        "table",
-        { className: "board" },
+        'table',
+        { className: 'board' },
         React.createElement(
-          "tbody",
+          'tbody',
           null,
           this.props.words.map(function (row, indexRow) {
             return React.createElement(
-              "tr",
+              'tr',
               { key: indexRow },
               row.map(function (card, indexCol) {
-                return React.createElement(Card, { value: card, key: indexRow * 6 + indexCol });
+                return React.createElement(Card, {
+                  value: card,
+                  key: indexRow * 6 + indexCol,
+                  isRevealed: _this3.props.isRevealed, color: _this3.props.colors[indexRow][indexCol] });
               })
             );
           })
@@ -74,22 +84,27 @@ var InfoBoard = function (_React$Component3) {
   }
 
   _createClass(InfoBoard, [{
-    key: "render",
+    key: 'render',
     value: function render() {
+      var _this5 = this;
+
       return React.createElement(
-        "div",
-        { className: "infoboard" },
+        'div',
+        { className: 'infoboard' },
         React.createElement(
-          "div",
-          { className: "player" },
-          "Team ",
+          'div',
+          { className: 'player' },
+          'Team ',
           this.props.isBluesTurn ? 'Blue' : 'Red',
-          "'s turn"
+          '\'s turn'
         ),
         React.createElement(
-          "button",
-          { className: "revealbutton" },
-          "Reveal"
+          'button',
+          { className: 'revealbutton', onClick: function onClick(e) {
+              e.preventDefault();
+              _this5.props.handleRevealClick();
+            } },
+          'Reveal'
         )
       );
     }
@@ -104,33 +119,48 @@ var Game = function (_React$Component4) {
   function Game(props) {
     _classCallCheck(this, Game);
 
-    var _this4 = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
+    var _this6 = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-    _this4.state = {
+    _this6.state = {
       isBluesTurn: true,
       words: [['ball', 'fish', 'track', 'maple', 'pole'], ['sink', 'apple', 'spell', 'kid', 'cab'], ['lemon', 'scientist', 'whip', 'coffee', 'cat'], ['leaf', 'dance', 'princess', 'net', 'Europe'], ['water', 'yellow', 'bridge', 'watermelon', 'tea']],
-      colors: [['blue', 'blue', 'red', 'yellow', 'yellow'], ['red', 'black', 'blue', 'red', 'blue'], ['red', 'blue', 'red', 'yellow', 'yellow'], ['blue', 'blue', 'red', 'blue', 'yellow'], ['yellow', 'yellow', 'red', 'blue', 'red']]
+      colors: [['blue', 'blue', 'red', 'yellow', 'yellow'], ['red', 'black', 'blue', 'red', 'blue'], ['red', 'blue', 'red', 'yellow', 'yellow'], ['blue', 'blue', 'red', 'blue', 'yellow'], ['yellow', 'yellow', 'red', 'blue', 'red']],
+      isRevealed: false
     };
-    return _this4;
+    _this6.handleRevealClick = _this6.handleRevealClick.bind(_this6);
+    return _this6;
   }
 
   _createClass(Game, [{
-    key: "render",
+    key: 'handleRevealClick',
+    value: function handleRevealClick() {
+      var _this7 = this;
+
+      this.setState({
+        isRevealed: !this.state.isRevealed
+      }, function () {
+        return console.log(_this7.state.isRevealed);
+      });
+    }
+  }, {
+    key: 'render',
     value: function render() {
       return React.createElement(
-        "div",
+        'div',
         null,
         React.createElement(
-          "div",
+          'div',
           null,
           React.createElement(
-            "h1",
+            'h1',
             null,
-            "Codenames"
+            'Codenames'
           )
         ),
-        React.createElement(Board, { words: this.state.words }),
-        React.createElement(InfoBoard, { isBluesTurn: this.state.isBluesTurn })
+        React.createElement(Board, { words: this.state.words, isRevealed: this.state.isRevealed, colors: this.state.colors }),
+        React.createElement(InfoBoard, {
+          isBluesTurn: this.state.isBluesTurn,
+          handleRevealClick: this.handleRevealClick })
       );
     }
   }]);
