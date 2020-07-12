@@ -1,0 +1,1 @@
+{"version":3,"sources":["../client/app.jsx"],"names":["ReactDOM","render","document","getElementById"],"mappings":"AAAAA,SAASC,MAAT,CAAgB;AAAA;AAAA;AAAA;AAAA,CAAhB,EAA4CC,SAASC,cAAT,CAAwB,KAAxB,CAA5C","file":"app.js","sourcesContent":["ReactDOM.render(<h1>Hello from react!</h1>, document.getElementById('app'));"]}
