@@ -1,10 +1,10 @@
 body {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Anonymous Pro', monospace;
   padding: 0;
   margin: 0;
-  font-size: 22px;
+  font-size: 20px;
   background-color: blanchedalmond;
-  /* color: #3c3c3c; */
+  color: rgb(86, 98, 109);
 }
 
 #app {
@@ -15,37 +15,72 @@ body {
 }
 
 .board {
-  /* width: 600px; */
-  margin: 100px auto 0;
+  margin: 30px auto 0;
   padding: 20px;
   border-spacing: 15px;
-  background-color: tan;
+  background-color: lightgray;
   border-radius: 5px;
-  border: 2px solid white;
+  border: 2px solid tan;
 }
 
 .card {
   width: 140px;
   height: 70px;
-  border: 2px solid white;
+  border: 2px solid tan;
   border-radius: 10px;
+  background-color: blanchedalmond;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.5s;
+}
+
+.card:hover {
+  box-shadow: 0 12px 22px 0 rgba(0,0,0,0.3);
+}
+
+.scoreboard,
+.infoboard {
+  width: 220px;
+  border-radius: 5px;
+  padding: 10px;
+  height: 300px;
+}
+
+.scoreboard {
   background-color: blanchedalmond;
 }
 
-.infoboard {
-  margin-top: 70px;
-
+.h3 {
+  font-size: 22px;
 }
 
-.revealbutton {
+button {
   font-family: inherit;
-  background-color: tan;
+  background-color: blanchedalmond;
+  color: inherit;
   cursor: pointer;
-  border: 2px solid white;
+  border: 2px solid tan;
+  /* border: none; */
   padding: 10px 20px;
   margin-top: 30px;
   border-radius: 5px;
   font-size: 18px;
+}
+
+.flexcontainer {
+  margin: 30px auto 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  width: 830px;
+  /* border: 2px solid tan; */
+  background-color: lightgray;
+  border-radius: 5px;
+  padding: 30px 10px;
+  font-size: 18px;
+}
+
+.flexcontainer table {
+  margin: 0 auto;
 }
 
 .blue {
@@ -57,7 +92,7 @@ body {
 }
 
 .black {
-  background-color: black;
+  background-color: rgb(57, 57, 57);
   color: white;
 }
 
@@ -79,4 +114,9 @@ body {
 
 .yellowb {
   border: 2px solid yellow;
+}
+
+.rules {
+  width: 850px;
+  margin: 0 auto;
 }
