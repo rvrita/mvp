@@ -302,7 +302,7 @@ var Game = function (_React$Component7) {
 
     _this10.state = {
       isBluesTurn: true,
-      cards: [[{ word: 'ball', color: 'blue', isGuessed: false }, { word: 'fish', color: 'blue', isGuessed: false }, { word: 'track', color: 'red', isGuessed: false }, { word: 'maple', color: 'yellow', isGuessed: false }, { word: 'pole', color: 'yellow', isGuessed: false }], [{ word: 'sink', color: 'red', isGuessed: false }, { word: 'apple', color: 'black', isGuessed: false }, { word: 'spell', color: 'blue', isGuessed: false }, { word: 'kid', color: 'red', isGuessed: false }, { word: 'cab', color: 'blue', isGuessed: false }], [{ word: 'lemon', color: 'red', isGuessed: false }, { word: 'scientist', color: 'blue', isGuessed: false }, { word: 'whip', color: 'red', isGuessed: false }, { word: 'coffee', color: 'yellow', isGuessed: false }, { word: 'cat', color: 'yellow', isGuessed: false }], [{ word: 'leaf', color: 'blue', isGuessed: false }, { word: 'dance', color: 'blue', isGuessed: false }, { word: 'princess', color: 'red', isGuessed: false }, { word: 'net', color: 'blue', isGuessed: false }, { word: 'Europe', color: 'yellow', isGuessed: false }], [{ word: 'water', color: 'yellow', isGuessed: false }, { word: 'yellow', color: 'yellow', isGuessed: false }, { word: 'bridge', color: 'red', isGuessed: false }, { word: 'watermelon', color: 'blue', isGuessed: false }, { word: 'tea', color: 'red', isGuessed: false }]],
+      cards: [],
       isRevealButtonOn: false
     };
     _this10.handleRevealClick = _this10.handleRevealClick.bind(_this10);
@@ -313,25 +313,59 @@ var Game = function (_React$Component7) {
   }
 
   _createClass(Game, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this11 = this;
+
+      fetch('/getwords', {
+        method: 'GET'
+      }).then(function (response) {
+        return response.json();
+      }).then(function (result) {
+        console.log('result', result);
+        var newShuffle = [[], [], [], [], []];
+        for (var i = 0; i < result.length; i++) {
+          result[i].isGuessed = false;
+          if (i < 5) {
+            newShuffle[0].push(result[i]);
+          } else if (i < 10) {
+            newShuffle[1].push(result[i]);
+          } else if (i < 15) {
+            newShuffle[2].push(result[i]);
+          } else if (i < 20) {
+            newShuffle[3].push(result[i]);
+          } else {
+            newShuffle[4].push(result[i]);
+          }
+        }
+        _this11.setState({
+          // isBluesTurn: result.isBluesTurn,
+          cards: newShuffle
+        }, function () {
+          return console.log(_this11.state.cards);
+        });
+      });
+    }
+  }, {
     key: "handleRevealClick",
     value: function handleRevealClick() {
-      var _this11 = this;
+      var _this12 = this;
 
       this.setState({
         isRevealButtonOn: !this.state.isRevealButtonOn
       }, function () {
-        return console.log(_this11.state.isRevealButtonOn);
+        return console.log(_this12.state.isRevealButtonOn);
       });
     }
   }, {
     key: "handleSkipClick",
     value: function handleSkipClick() {
-      var _this12 = this;
+      var _this13 = this;
 
       this.setState({
         isBluesTurn: !this.state.isBluesTurn
       }, function () {
-        return console.log(_this12.state.isBluesTurn);
+        return console.log(_this13.state.isBluesTurn);
       });
     }
   }, {
@@ -342,7 +376,7 @@ var Game = function (_React$Component7) {
   }, {
     key: "handleCardClick",
     value: function handleCardClick(indexRow, indexCol) {
-      var _this13 = this;
+      var _this14 = this;
 
       console.log(indexRow, indexCol);
       console.log(this.state.cards[indexRow][indexCol]);
@@ -351,7 +385,7 @@ var Game = function (_React$Component7) {
       this.setState({
         cards: newCards
       }, function () {
-        return console.log(_this13.state.cards);
+        return console.log(_this14.state.cards);
       });
     }
   }, {

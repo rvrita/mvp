@@ -3,7 +3,7 @@ body {
   padding: 0;
   margin: 0;
   font-size: 20px;
-  background-color: blanchedalmond;
+  background-color: linen;
   color: rgb(86, 98, 109);
 }
 
@@ -20,7 +20,7 @@ body {
   border-spacing: 15px;
   background-color: lightgray;
   border-radius: 5px;
-  border: 2px solid tan;
+  /* border: 2px solid tan; */
 }
 
 .card {
@@ -46,7 +46,7 @@ body {
 }
 
 .scoreboard {
-  background-color: blanchedalmond;
+  background-color: linen
 }
 
 .h3 {
@@ -55,11 +55,10 @@ body {
 
 button {
   font-family: inherit;
-  background-color: blanchedalmond;
+  background-color: linen;
   color: inherit;
   cursor: pointer;
-  border: 2px solid tan;
-  /* border: none; */
+  border: 2px solid rgb(122, 139, 155);
   padding: 10px 20px;
   margin-top: 30px;
   border-radius: 5px;
@@ -72,7 +71,6 @@ button {
   justify-content: space-evenly;
   align-items: flex-start;
   width: 830px;
-  /* border: 2px solid tan; */
   background-color: lightgray;
   border-radius: 5px;
   padding: 30px 10px;
@@ -84,28 +82,35 @@ button {
 }
 
 .blue {
-  background-color: lightblue;
+  background-color: steelblue;
+  color: white;
+  border: 2px solid rgb(46, 108, 159);
 }
 
 .red {
-  background-color: lightcoral;
+  background-color: rgb(206, 91, 91);
+  color: white;
+  border: 2px solid rgb(199, 69, 69);
 }
 
 .black {
   background-color: rgb(57, 57, 57);
   color: white;
+  border: 2px solid white;
 }
 
 .yellow {
-  background-color: rgb(255, 255, 138);
+  background-color: rgb(235, 206, 42);
+  color: white;
+  border: 2px solid rgb(212, 184, 25);
 }
 
 .blueb {
-  border: 2px solid cornflowerblue;
+  border: 2px solid steelblue;
 }
 
 .redb {
-  border: 2px solid tomato;
+  border: 2px solid rgb(206, 91, 91);
 }
 
 .blackb {
@@ -113,7 +118,7 @@ button {
 }
 
 .yellowb {
-  border: 2px solid yellow;
+  border: 2px solid rgb(235, 206, 42);
 }
 
 .rules {

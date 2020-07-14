@@ -131,39 +131,42 @@ class Game extends React.Component {
     super(props);
     this.state = {
       isBluesTurn: true,
-      cards: [
-        [{ word: 'ball', color: 'blue', isGuessed: false },
-        { word: 'fish', color: 'blue', isGuessed: false },
-        { word: 'track', color: 'red', isGuessed: false },
-        { word: 'maple', color: 'yellow', isGuessed: false },
-        { word: 'pole', color: 'yellow', isGuessed: false }],
-        [{ word: 'sink', color: 'red', isGuessed: false },
-        { word: 'apple', color: 'black', isGuessed: false },
-        { word: 'spell', color: 'blue', isGuessed: false },
-        { word: 'kid', color: 'red', isGuessed: false },
-        { word: 'cab', color: 'blue', isGuessed: false }],
-        [{ word: 'lemon', color: 'red', isGuessed: false },
-        { word: 'scientist', color: 'blue', isGuessed: false },
-        { word: 'whip', color: 'red', isGuessed: false },
-        { word: 'coffee', color: 'yellow', isGuessed: false },
-        { word: 'cat', color: 'yellow', isGuessed: false }],
-        [{ word: 'leaf', color: 'blue', isGuessed: false },
-        { word: 'dance', color: 'blue', isGuessed: false },
-        { word: 'princess', color: 'red', isGuessed: false },
-        { word: 'net', color: 'blue', isGuessed: false },
-        { word: 'Europe', color: 'yellow', isGuessed: false }],
-        [{ word: 'water', color: 'yellow', isGuessed: false },
-        { word: 'yellow', color: 'yellow', isGuessed: false },
-        { word: 'bridge', color: 'red', isGuessed: false },
-        { word: 'watermelon', color: 'blue', isGuessed: false },
-        { word: 'tea', color: 'red', isGuessed: false }]
-      ],
+      cards: [],
       isRevealButtonOn: false
     }
     this.handleRevealClick = this.handleRevealClick.bind(this);
     this.handleCardClick = this.handleCardClick.bind(this);
     this.handleSkipClick = this.handleSkipClick.bind(this);
     this.handleRestartClick = this.handleRestartClick.bind(this);
+  }
+
+  componentDidMount() {
+    fetch('/getwords', {
+      method: 'GET',
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log('result', result)
+      var newShuffle = [[], [], [], [], []]
+      for (var i = 0; i < result.length; i++) {
+        result[i].isGuessed = false;
+        if (i < 5) {
+          newShuffle[0].push(result[i]);
+        } else if (i < 10) {
+          newShuffle[1].push(result[i]);
+        } else if (i < 15) {
+          newShuffle[2].push(result[i]);
+        } else if (i < 20) {
+          newShuffle[3].push(result[i]);
+        } else {
+          newShuffle[4].push(result[i]);
+        }
+      }
+      this.setState({
+        // isBluesTurn: result.isBluesTurn,
+        cards: newShuffle
+      }, () => console.log(this.state.cards));
+    })
   }
 
   handleRevealClick() {
@@ -213,6 +216,5 @@ class Game extends React.Component {
     )
   }
 }
-
 
 ReactDOM.render(<Game />, document.getElementById('app'));
