@@ -94,8 +94,8 @@ class InfoBoard extends React.Component {
           isBluesTurn={this.props.isBluesTurn}
           handleRevealClick={this.props.handleRevealClick}
           handleSkipClick={this.props.handleSkipClick}
-          // handleRestartClick={this.props.handleRestartClick}
-          />
+        // handleRestartClick={this.props.handleRestartClick}
+        />
         <Player team='Red' gameStatus={this.props.gameStatus} />
       </div>
     )
@@ -147,52 +147,86 @@ class AddWords extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      valueList: 'built-in'
+      valueList: 'built-in',
+      valueSelect: 'Rita1',
+      valueWord: '',
+      valueOwnCollection: ''
     },
       this.handleWordListChange = this.handleWordListChange.bind(this);
+    this.handleYourCollectionChange = this.handleYourCollectionChange.bind(this);
+    this.handleCollectionChange = this.handleCollectionChange.bind(this);
+    this.handleWordChange = this.handleWordChange.bind(this);
   }
 
   handleWordListChange(event) {
     this.setState({
       valueList: event.target.value
-    }, () => console.log(this.state.valueList));
+    });
+  }
+
+  handleYourCollectionChange(event) {
+    this.setState({
+      valueOwnCollection: event.target.value
+    });
+  }
+
+  handleCollectionChange(event) {
+    this.setState({
+      valueSelect: event.target.value
+    });
+  }
+
+  handleWordChange(event) {
+    this.setState({
+      valueWord: event.target.value
+    });
   }
 
   render() {
     return (
       <div className="addwords-container">
-        {/* <div className="addwordsform">
+        <div className="addwordsform">
           <h4>Add your own words (one at a time):</h4>
           <form onSubmit={(e) => {
             e.preventDefault();
-            this.handleAddWordSubmit(this.state.value);
+            var word = this.state.valueWord;
+            if (this.state.valueOwnCollection === '') {
+              var list = this.state.valueSelect;
+            } else {
+              var list = this.state.valueOwnCollection;
+            }
+            this.props.handleAddWordSubmit(word, list);
           }}>
             <label>Name of your collection:
-          <input type="text" id="collectionname" name="collectionname" />
+          <input type="text" id="collectionname" name="collectionname" value={this.state.valueOwnCollection} onChange={this.handleYourCollectionChange} />
             </label><br />
             <label>Or add to an existing list:
-            <select value={this.state.value} onChange={this.handleWordListChange}>
-                <option value="built-in">Built-in</option>
-                <option value="rita1">Rita1</option>
+            <select value={this.state.valueSelect} onChange={this.handleCollectionChange}>
+              {this.props.collections.filter(obj => obj.collection !== 'Built-In').map((option,index) => {
+                return <option key={index} value={option.collection}>{option.collection}</option>
+              })}
               </select>
             </label><br /><br />
             <label>Word:
-          <input type="text" id="addwords" name="addwords" />
+              <input type="text" id="addwords" name="addwords" value={this.state.valueWord} onChange={this.handleWordChange} />
             </label><br />
             <input type="submit" value="Submit" />
           </form>
-        </div> */}
+        </div>
         <div className="restartgame">
           <h4>Restart the game:</h4><br />
           <form onSubmit={(e) => {
             e.preventDefault();
             this.props.handleRestartSubmit(this.state.valueList);
           }}>
-            <label>Choose a list:
+            <label>Choose a list (has to have at least 25 words):
             <select value={this.state.valueList} onChange={this.handleWordListChange}>
-                <option value="built-in">Built-in</option>
-                <option value="rita1">Rita1</option>
-              </select>
+              {this.props.collections.filter(obj => obj.count > 25).map((option,index)=> {
+                  return <option key={index} value={option.collection}>{option.collection}</option>;
+                }
+
+              )}
+            </select>
             </label><br />
             <input type="submit" value="Restart" />
           </form>
@@ -214,7 +248,8 @@ class Game extends React.Component {
         redRevealed: 0,
         blueTotal: 0,
         blueRevealed: 0
-      }
+      },
+      collections: []
     }
     this.handleRevealClick = this.handleRevealClick.bind(this);
     this.handleCardClick = this.handleCardClick.bind(this);
@@ -223,6 +258,14 @@ class Game extends React.Component {
 
   componentDidMount() {
     this.fetchWords('/getwords');
+    fetch('/collections')
+      .then(response => response.json())
+      // .then(res => { console.log('res', res); return res; })
+      .then(result => {
+        this.setState({
+          collections: result
+        }, () => console.log(this.state.collections))
+      });
   }
 
   fetchWords(url) {
@@ -262,10 +305,27 @@ class Game extends React.Component {
     this.fetchWords(`/collections/${valueList}`);
   }
 
+  handleAddWordSubmit(word, list) {
+    console.log(word, list);
+    var data = { word: word, list: list };
+    fetch('/addwords', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+    // .then(response => response.json())
+    // .then(result => console.log(result))
+  }
+
   handleCardClick(indexRow, indexCol) {
     newCards = this.state.cards.slice();
     newCards[indexRow][indexCol].isRevealed = true;
     var color = newCards[indexRow][indexCol].color;
+    // if (color === 'black') {
+
+    // }
     var currentBlueNumber = this.state.gameStatus.blueRevealed;
     var currentRedNumber = this.state.gameStatus.redRevealed;
     this.setState({
@@ -293,11 +353,12 @@ class Game extends React.Component {
         <InfoBoard
           isBluesTurn={this.state.isBluesTurn}
           handleRevealClick={this.handleRevealClick}
-          // handleSkipClick={this.handleSkipClick}
-          // handleRestartClick={this.handleRestartClick}
           cards={this.state.cards}
           gameStatus={this.state.gameStatus} />
-        <AddWords handleRestartSubmit={this.handleRestartSubmit} />
+        <AddWords
+          handleRestartSubmit={this.handleRestartSubmit}
+          handleAddWordSubmit={this.handleAddWordSubmit}
+          collections={this.state.collections} />
         <Rules />
       </div>
     )
@@ -315,3 +376,5 @@ ReactDOM.render(<Game />, document.getElementById('app'));
 // mesage for if yellow -> other team's turn
 
 // adding hints
+
+// form field add word -> change color

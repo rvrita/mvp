@@ -306,30 +306,110 @@ var AddWords = function (_React$Component7) {
     var _this10 = _possibleConstructorReturn(this, (AddWords.__proto__ || Object.getPrototypeOf(AddWords)).call(this, props));
 
     _this10.state = {
-      valueList: 'built-in'
+      valueList: 'built-in',
+      valueSelect: 'Rita1',
+      valueWord: '',
+      valueOwnCollection: ''
     }, _this10.handleWordListChange = _this10.handleWordListChange.bind(_this10);
+    _this10.handleYourCollectionChange = _this10.handleYourCollectionChange.bind(_this10);
+    _this10.handleCollectionChange = _this10.handleCollectionChange.bind(_this10);
+    _this10.handleWordChange = _this10.handleWordChange.bind(_this10);
     return _this10;
   }
 
   _createClass(AddWords, [{
     key: "handleWordListChange",
     value: function handleWordListChange(event) {
-      var _this11 = this;
-
       this.setState({
         valueList: event.target.value
-      }, function () {
-        return console.log(_this11.state.valueList);
+      });
+    }
+  }, {
+    key: "handleYourCollectionChange",
+    value: function handleYourCollectionChange(event) {
+      this.setState({
+        valueOwnCollection: event.target.value
+      });
+    }
+  }, {
+    key: "handleCollectionChange",
+    value: function handleCollectionChange(event) {
+      this.setState({
+        valueSelect: event.target.value
+      });
+    }
+  }, {
+    key: "handleWordChange",
+    value: function handleWordChange(event) {
+      this.setState({
+        valueWord: event.target.value
       });
     }
   }, {
     key: "render",
     value: function render() {
-      var _this12 = this;
+      var _this11 = this;
 
       return React.createElement(
         "div",
         { className: "addwords-container" },
+        React.createElement(
+          "div",
+          { className: "addwordsform" },
+          React.createElement(
+            "h4",
+            null,
+            "Add your own words (one at a time):"
+          ),
+          React.createElement(
+            "form",
+            { onSubmit: function onSubmit(e) {
+                e.preventDefault();
+                var word = _this11.state.valueWord;
+                if (_this11.state.valueOwnCollection === '') {
+                  var list = _this11.state.valueSelect;
+                } else {
+                  var list = _this11.state.valueOwnCollection;
+                }
+                _this11.props.handleAddWordSubmit(word, list);
+              } },
+            React.createElement(
+              "label",
+              null,
+              "Name of your collection:",
+              React.createElement("input", { type: "text", id: "collectionname", name: "collectionname", value: this.state.valueOwnCollection, onChange: this.handleYourCollectionChange })
+            ),
+            React.createElement("br", null),
+            React.createElement(
+              "label",
+              null,
+              "Or add to an existing list:",
+              React.createElement(
+                "select",
+                { value: this.state.valueSelect, onChange: this.handleCollectionChange },
+                this.props.collections.filter(function (obj) {
+                  return obj.collection !== 'Built-In';
+                }).map(function (option, index) {
+                  return React.createElement(
+                    "option",
+                    { key: index, value: option.collection },
+                    option.collection
+                  );
+                })
+              )
+            ),
+            React.createElement("br", null),
+            React.createElement("br", null),
+            React.createElement(
+              "label",
+              null,
+              "Word:",
+              React.createElement("input", { type: "text", id: "addwords", name: "addwords", value: this.state.valueWord, onChange: this.handleWordChange })
+            ),
+            React.createElement("br", null),
+            React.createElement("input", { type: "submit", value: "Submit" })
+          )
+        ),
         React.createElement(
           "div",
           { className: "restartgame" },
@@ -343,25 +423,24 @@ var AddWords = function (_React$Component7) {
             "form",
             { onSubmit: function onSubmit(e) {
                 e.preventDefault();
-                _this12.props.handleRestartSubmit(_this12.state.valueList);
+                _this11.props.handleRestartSubmit(_this11.state.valueList);
               } },
             React.createElement(
               "label",
               null,
-              "Choose a list:",
+              "Choose a list (has to have at least 25 words):",
               React.createElement(
                 "select",
                 { value: this.state.valueList, onChange: this.handleWordListChange },
-                React.createElement(
-                  "option",
-                  { value: "built-in" },
-                  "Built-in"
-                ),
-                React.createElement(
-                  "option",
-                  { value: "rita1" },
-                  "Rita1"
-                )
+                this.props.collections.filter(function (obj) {
+                  return obj.count > 25;
+                }).map(function (option, index) {
+                  return React.createElement(
+                    "option",
+                    { key: index, value: option.collection },
+                    option.collection
+                  );
+                })
               )
             ),
             React.createElement("br", null),
@@ -381,9 +460,9 @@ var Game = function (_React$Component8) {
   function Game(props) {
     _classCallCheck(this, Game);
 
-    var _this13 = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
+    var _this12 = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-    _this13.state = {
+    _this12.state = {
       isBluesTurn: true,
       cards: [],
       isRevealButtonOn: false,
@@ -392,18 +471,32 @@ var Game = function (_React$Component8) {
         redRevealed: 0,
         blueTotal: 0,
         blueRevealed: 0
-      }
+      },
+      collections: []
     };
-    _this13.handleRevealClick = _this13.handleRevealClick.bind(_this13);
-    _this13.handleCardClick = _this13.handleCardClick.bind(_this13);
-    _this13.handleRestartSubmit = _this13.handleRestartSubmit.bind(_this13);
-    return _this13;
+    _this12.handleRevealClick = _this12.handleRevealClick.bind(_this12);
+    _this12.handleCardClick = _this12.handleCardClick.bind(_this12);
+    _this12.handleRestartSubmit = _this12.handleRestartSubmit.bind(_this12);
+    return _this12;
   }
 
   _createClass(Game, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var _this13 = this;
+
       this.fetchWords('/getwords');
+      fetch('/collections').then(function (response) {
+        return response.json();
+      })
+      // .then(res => { console.log('res', res); return res; })
+      .then(function (result) {
+        _this13.setState({
+          collections: result
+        }, function () {
+          return console.log(_this13.state.collections);
+        });
+      });
     }
   }, {
     key: "fetchWords",
@@ -452,6 +545,21 @@ var Game = function (_React$Component8) {
       this.fetchWords("/collections/" + valueList);
     }
   }, {
+    key: "handleAddWordSubmit",
+    value: function handleAddWordSubmit(word, list) {
+      console.log(word, list);
+      var data = { word: word, list: list };
+      fetch('/addwords', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      // .then(response => response.json())
+      // .then(result => console.log(result))
+    }
+  }, {
     key: "handleCardClick",
     value: function handleCardClick(indexRow, indexCol) {
       var _this16 = this;
@@ -459,6 +567,9 @@ var Game = function (_React$Component8) {
       newCards = this.state.cards.slice();
       newCards[indexRow][indexCol].isRevealed = true;
       var color = newCards[indexRow][indexCol].color;
+      // if (color === 'black') {
+
+      // }
       var currentBlueNumber = this.state.gameStatus.blueRevealed;
       var currentRedNumber = this.state.gameStatus.redRevealed;
       this.setState({
@@ -499,12 +610,13 @@ var Game = function (_React$Component8) {
           cards: this.state.cards }),
         React.createElement(InfoBoard, {
           isBluesTurn: this.state.isBluesTurn,
-          handleRevealClick: this.handleRevealClick
-          // handleSkipClick={this.handleSkipClick}
-          // handleRestartClick={this.handleRestartClick}
-          , cards: this.state.cards,
+          handleRevealClick: this.handleRevealClick,
+          cards: this.state.cards,
           gameStatus: this.state.gameStatus }),
-        React.createElement(AddWords, { handleRestartSubmit: this.handleRestartSubmit }),
+        React.createElement(AddWords, {
+          handleRestartSubmit: this.handleRestartSubmit,
+          handleAddWordSubmit: this.handleAddWordSubmit,
+          collections: this.state.collections }),
         React.createElement(Rules, null)
       );
     }
@@ -521,4 +633,6 @@ ReactDOM.render(React.createElement(Game, null), document.getElementById('app'))
 // mesage for if yellow -> other team's turn
 
 // adding hints
+
+// form field add word -> change color
 //# sourceMappingURL=app.js.map

@@ -2,8 +2,10 @@ const express = require('express');
 const mysql = require('mysql');
 const app = express();
 const port = 3000;
+const bodyParser = require('body-parser');
 
-app.use(express.static('public'))
+app.use(express.static('public'));
+app.use(bodyParser.json());
 
 app.listen(port, () => console.log(`Listening at http://localhost:${port}`))
 
@@ -39,49 +41,51 @@ app.get('/collections/:listname', (req, res) => {
 
 });
 
-var addColor = function (obj) {
-  var teams = ['red', 'blue'];
-  var startTeam = teams[Math.floor(Math.random * 2)];
-  if (teams === 'red') {
-    var colorObj = {
-      'yellow': 7,
-      'red': 9,
-      'blue': 8,
-      'black': 1
-    }
-    // obj[isBluesTurn] = false;
-  } else {
-    var colorObj = {
-      'yellow': 7,
-      'red': 8,
-      'blue': 9,
-      'black': 1
-    }
-    // obj[isBluesTurn] = true;
-  }
+app.get('/collections', (req, res) => {
+  var sql = `SELECT COUNT(*) as count, collection FROM vocabulary GROUP BY collection`;
 
-  var appendColor = function (obj) {
-    var colors = Object.keys(colorObj);
-    for (var i = 0; i < 25; i++) {
-      var newColor = colors[Math.floor(Math.random() * colors.length)];
-      obj[i].color = newColor;
-      colorObj[newColor]--;
-      if (colorObj[newColor] === 0) {
-        var index = colors.indexOf(newColor);
-        var firstArr = colors.slice(0, index);
-        var secondArr = colors.slice(index + 1);
-        colors = [...firstArr, ...secondArr];
+  db.query(sql, (err, result) => {
+    if (err) { console.log(err) }
+    console.log(result);
+    res.send(result);
+  })
+
+});
+
+app.post('/addwords', (req, res) => {
+  console.log(req.body);
+
+  var sql = `INSERT INTO vocabulary (collection, word) VALUES (?, ?)`;
+  var queryArgs = [req.body.list.toLowerCase(), req.body.word];
+
+  db.query(sql, queryArgs, (err, result) => {
+    if (err) { res.send('word already exists'); }
+    res.send('word added');
+  })
+
+});
+
+// adding random colors to each card, last card shows who start the game
+var addColor = function(array) {
+  var teams = ['red', 'blue'];
+  var startTeam = teams[Math.floor(Math.random() * 2)];
+  console.log('st', startTeam)
+  for (var i = 0; i < 25; i++) {
+    if (i < 7) {
+      array[i].color = 'yellow';
+    } else if (i < 8) {
+      array[i].color = 'black';
+    } else if (i < 16) {
+      array[i].color = 'blue';
+    } else if (i < 24) {
+      array[i].color = 'red';
+    } else {
+      if (startTeam === 'blue') {
+        array[24].color = 'blue';
+      } else {
+        array[24].color = 'red';
       }
     }
   }
-  appendColor(obj);
-
-  return obj;
+  return array;
 }
-
-
-
-// var getNewColor = function () {
-//   var colors = ['red', 'blue', 'yellow', 'black']
-//   colors[Math.floor(Math.random() * 4)];
-// }

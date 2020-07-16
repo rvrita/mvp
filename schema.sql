@@ -5,9 +5,9 @@ USE codenames;
 DROP TABLE IF EXISTS vocabulary;
 CREATE TABLE vocabulary (
   id INTEGER NOT NULL AUTO_INCREMENT,
-  word VARCHAR(255) NOT NULL UNIQUE,
-  `collection` VARCHAR(255) NOT NULL DEFAULT 'Built-In',
-  PRIMARY KEY (id)
+  word VARCHAR(255) NOT NULL,
+  `collection` VARCHAR(255) NOT NULL DEFAULT 'built-in',
+  PRIMARY KEY (word, collection)
 );
 
 INSERT INTO vocabulary (word) VALUES
