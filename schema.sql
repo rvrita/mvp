@@ -6,11 +6,12 @@ DROP TABLE IF EXISTS vocabulary;
 CREATE TABLE vocabulary (
   id INTEGER NOT NULL AUTO_INCREMENT,
   word VARCHAR(255) NOT NULL UNIQUE,
+  `collection` VARCHAR(255) NOT NULL DEFAULT 'Built-In',
   PRIMARY KEY (id)
 );
 
 INSERT INTO vocabulary (word) VALUES
-  ('ball'), ('fish'), ('track'), ('oak'), ('pole'),
+  ('ball'), ('fish'), ('track'), ('peach'), ('pole'),
   ('sink'), ('apple'), ('spell'), ('kid'), ('cab'),
   ('lemon'), ('scientist'), ('whip'), ('coffee'), ('cat'),
   ('leaf'), ('bike'), ('princess'), ('net'), ('Europe'),
@@ -28,5 +29,14 @@ INSERT INTO vocabulary (word) VALUES
   ('church'), ('life'), ('alien'), ('shot'), ('dance'),
   ('tower'), ('seal'), ('belt'), ('paper'), ('bar'),
   ('head'), ('spot'), ('witch'), ('switch'), ('tick'),
-  ('dog'), ('Nasa'), ('Orion'), ('keyboard'), ('photo'),
+  ('dog'), ('NASA'), ('Orion'), ('keyboard'), ('photo'),
   ('piano'), ('box'), ('mug'), ('fridge'), ('sandwich');
+
+
+  INSERT INTO vocabulary (collection, word) VALUES
+  ('rita1', 'broccoli'), ('rita1','Canada'), ('rita1', 'rabbit'), ('rita1', 'chess'), ('rita1','season'),
+  ('rita1', 'pillow'), ('rita1','poem'), ('rita1', 'party'), ('rita1', 'oak'), ('rita1','sandcastle'),
+  ('rita1', 'chocolate'), ('rita1','rainbow'), ('rita1', 'elf'), ('rita1', 'cheerleader'), ('rita1','goblin'),
+  ('rita1', 'cowboy'), ('rita1','river'), ('rita1', 'jet'), ('rita1', 'gingerbread'), ('rita1','lizard'),
+  ('rita1', 'pear'), ('rita1','guitar'), ('rita1', 'nose'), ('rita1', 'engine'), ('rita1','spoon'),
+  ('rita1', 'jeans'), ('rita1','puppy'), ('rita1', 'dot'), ('rita1', 'lollipop'), ('rita1','glasses');

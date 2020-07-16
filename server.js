@@ -27,6 +27,18 @@ app.get('/getwords', (req, res) => {
 
 });
 
+app.get('/collections/:listname', (req, res) => {
+  var sql = `SELECT * FROM vocabulary WHERE collection=? ORDER BY RAND() LIMIT 25`;
+  var queryArgs = [req.params.listname];
+
+  db.query(sql, queryArgs, (err, result) => {
+    if (err) { console.log(err) }
+    var resultWithColors = addColor(result);
+    res.send(resultWithColors);
+  })
+
+});
+
 var addColor = function (obj) {
   var teams = ['red', 'blue'];
   var startTeam = teams[Math.floor(Math.random * 2)];

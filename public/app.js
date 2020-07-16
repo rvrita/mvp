@@ -6,236 +6,23 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Card = function (_React$Component) {
-  _inherits(Card, _React$Component);
-
-  function Card() {
-    _classCallCheck(this, Card);
-
-    return _possibleConstructorReturn(this, (Card.__proto__ || Object.getPrototypeOf(Card)).apply(this, arguments));
+var fisherYatesShuffle = function fisherYatesShuffle(array) {
+  // not working
+  // k is to generate random index and temp is to swap the values
+  var i = array.length,
+      k,
+      temp;
+  while (i !== 0) {
+    k = Math.floor(Math.random() * i);
+    i -= 1;
+    temp = array[i];
+    array[i] = array[k];
+    array[k] = temp;
   }
+};
 
-  _createClass(Card, [{
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var classes = 'card';
-      if (this.props.isRevealButtonOn) {
-        classes += " " + this.props.card.color + "b";
-      }
-      if (this.props.card.isGuessed) {
-        classes += " " + this.props.card.color;
-      }
-      return React.createElement(
-        "td",
-        { className: classes, onClick: function onClick(e) {
-            e.preventDefault();
-            _this2.props.handleCardClick(_this2.props.indexRow, _this2.props.indexCol);
-          } },
-        this.props.card.word
-      );
-    }
-  }]);
-
-  return Card;
-}(React.Component);
-
-var Board = function (_React$Component2) {
-  _inherits(Board, _React$Component2);
-
-  function Board() {
-    _classCallCheck(this, Board);
-
-    return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).apply(this, arguments));
-  }
-
-  _createClass(Board, [{
-    key: "render",
-    value: function render() {
-      var _this4 = this;
-
-      return React.createElement(
-        "table",
-        { className: "board" },
-        React.createElement(
-          "tbody",
-          null,
-          this.props.cards.map(function (row, indexRow) {
-            return React.createElement(
-              "tr",
-              { key: indexRow },
-              row.map(function (card, indexCol) {
-                return React.createElement(Card, {
-                  card: card,
-                  key: indexRow * 5 + indexCol,
-                  isRevealButtonOn: _this4.props.isRevealButtonOn,
-                  indexRow: indexRow,
-                  indexCol: indexCol,
-                  handleCardClick: _this4.props.handleCardClick });
-              })
-            );
-          })
-        )
-      );
-    }
-  }]);
-
-  return Board;
-}(React.Component);
-
-var InfoBoard = function (_React$Component3) {
-  _inherits(InfoBoard, _React$Component3);
-
-  function InfoBoard() {
-    _classCallCheck(this, InfoBoard);
-
-    return _possibleConstructorReturn(this, (InfoBoard.__proto__ || Object.getPrototypeOf(InfoBoard)).apply(this, arguments));
-  }
-
-  _createClass(InfoBoard, [{
-    key: "render",
-    value: function render() {
-      return React.createElement(
-        "div",
-        { className: "flexcontainer" },
-        React.createElement(Player, { team: "Blue" }),
-        React.createElement(Info, {
-          isBluesTurn: this.props.isBluesTurn,
-          handleRevealClick: this.props.handleRevealClick,
-          handleSkipClick: this.props.handleSkipClick,
-          handleRestartClick: this.props.handleRestartClick }),
-        React.createElement(Player, { team: "Red" })
-      );
-    }
-  }]);
-
-  return InfoBoard;
-}(React.Component);
-
-var Player = function (_React$Component4) {
-  _inherits(Player, _React$Component4);
-
-  function Player() {
-    _classCallCheck(this, Player);
-
-    return _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).apply(this, arguments));
-  }
-
-  _createClass(Player, [{
-    key: "render",
-    value: function render() {
-      return React.createElement(
-        "div",
-        { className: "scoreboard" },
-        React.createElement(
-          "h3",
-          null,
-          this.props.team,
-          " Team's Scores:"
-        ),
-        React.createElement(
-          "table",
-          null,
-          React.createElement(
-            "tbody",
-            null,
-            React.createElement(
-              "tr",
-              null,
-              React.createElement(
-                "td",
-                null,
-                "All cards:"
-              ),
-              React.createElement(
-                "td",
-                null,
-                "9"
-              )
-            ),
-            React.createElement(
-              "tr",
-              null,
-              React.createElement(
-                "td",
-                null,
-                "Remaining:"
-              ),
-              React.createElement(
-                "td",
-                null,
-                "4"
-              )
-            )
-          )
-        )
-      );
-    }
-  }]);
-
-  return Player;
-}(React.Component);
-
-var Info = function (_React$Component5) {
-  _inherits(Info, _React$Component5);
-
-  function Info() {
-    _classCallCheck(this, Info);
-
-    return _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).apply(this, arguments));
-  }
-
-  _createClass(Info, [{
-    key: "render",
-    value: function render() {
-      var _this8 = this;
-
-      return React.createElement(
-        "div",
-        { className: "infoboard" },
-        React.createElement(
-          "h3",
-          { className: "playerturn" },
-          "Team ",
-          this.props.isBluesTurn ? 'Blue' : 'Red',
-          "'s turn"
-        ),
-        React.createElement(
-          "button",
-          { className: "skipbutton", onClick: function onClick(e) {
-              e.preventDefault();
-              _this8.props.handleSkipClick();
-            } },
-          "Skip"
-        ),
-        React.createElement("br", null),
-        React.createElement(
-          "button",
-          { className: "revealbutton", onClick: function onClick(e) {
-              e.preventDefault();
-              _this8.props.handleRevealClick();
-            } },
-          "Reveal"
-        ),
-        React.createElement("br", null),
-        React.createElement(
-          "button",
-          { className: "restartbutton", onClick: function onClick(e) {
-              e.preventDefault();
-              _this8.props.handleRestartClick();
-            } },
-          "Restart"
-        )
-      );
-    }
-  }]);
-
-  return Info;
-}(React.Component);
-
-var Rules = function (_React$Component6) {
-  _inherits(Rules, _React$Component6);
+var Rules = function (_React$Component) {
+  _inherits(Rules, _React$Component);
 
   function Rules() {
     _classCallCheck(this, Rules);
@@ -292,100 +79,398 @@ var Rules = function (_React$Component6) {
   return Rules;
 }(React.Component);
 
-var Game = function (_React$Component7) {
-  _inherits(Game, _React$Component7);
+var Board = function (_React$Component2) {
+  _inherits(Board, _React$Component2);
+
+  function Board() {
+    _classCallCheck(this, Board);
+
+    return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).apply(this, arguments));
+  }
+
+  _createClass(Board, [{
+    key: "render",
+    value: function render() {
+      var _this3 = this;
+
+      return React.createElement(
+        "table",
+        { className: "board" },
+        React.createElement(
+          "tbody",
+          null,
+          this.props.cards.map(function (row, indexRow) {
+            return React.createElement(
+              "tr",
+              { key: indexRow },
+              row.map(function (card, indexCol) {
+                return React.createElement(Card, {
+                  card: card,
+                  key: indexRow * 5 + indexCol,
+                  isRevealButtonOn: _this3.props.isRevealButtonOn,
+                  indexRow: indexRow,
+                  indexCol: indexCol,
+                  handleCardClick: _this3.props.handleCardClick });
+              })
+            );
+          })
+        )
+      );
+    }
+  }]);
+
+  return Board;
+}(React.Component);
+
+var Card = function (_React$Component3) {
+  _inherits(Card, _React$Component3);
+
+  function Card() {
+    _classCallCheck(this, Card);
+
+    return _possibleConstructorReturn(this, (Card.__proto__ || Object.getPrototypeOf(Card)).apply(this, arguments));
+  }
+
+  _createClass(Card, [{
+    key: "render",
+    value: function render() {
+      var _this5 = this;
+
+      var classes = 'card';
+      if (this.props.isRevealButtonOn) {
+        classes += " " + this.props.card.color + "b";
+      }
+      if (this.props.card.isRevealed) {
+        classes += " " + this.props.card.color;
+      }
+      return React.createElement(
+        "td",
+        { className: classes, onClick: function onClick(e) {
+            e.preventDefault();
+            _this5.props.handleCardClick(_this5.props.indexRow, _this5.props.indexCol);
+          } },
+        this.props.card.word
+      );
+    }
+  }]);
+
+  return Card;
+}(React.Component);
+
+var Info = function (_React$Component4) {
+  _inherits(Info, _React$Component4);
+
+  function Info() {
+    _classCallCheck(this, Info);
+
+    return _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).apply(this, arguments));
+  }
+
+  _createClass(Info, [{
+    key: "render",
+    value: function render() {
+      var _this7 = this;
+
+      return React.createElement(
+        "div",
+        { className: "infoboard" },
+        React.createElement(
+          "h3",
+          { className: "playerturn" },
+          this.props.isBluesTurn ? 'Blue' : 'Red',
+          " Team starts"
+        ),
+        React.createElement(
+          "button",
+          { className: "revealbutton", onClick: function onClick(e) {
+              e.preventDefault();
+              _this7.props.handleRevealClick();
+            } },
+          "Reveal"
+        ),
+        React.createElement("br", null)
+      );
+    }
+  }]);
+
+  return Info;
+}(React.Component);
+
+var InfoBoard = function (_React$Component5) {
+  _inherits(InfoBoard, _React$Component5);
+
+  function InfoBoard() {
+    _classCallCheck(this, InfoBoard);
+
+    return _possibleConstructorReturn(this, (InfoBoard.__proto__ || Object.getPrototypeOf(InfoBoard)).apply(this, arguments));
+  }
+
+  _createClass(InfoBoard, [{
+    key: "render",
+    value: function render() {
+      return React.createElement(
+        "div",
+        { className: "flexcontainer" },
+        React.createElement(Player, { team: "Blue", gameStatus: this.props.gameStatus }),
+        React.createElement(Info, {
+          isBluesTurn: this.props.isBluesTurn,
+          handleRevealClick: this.props.handleRevealClick,
+          handleSkipClick: this.props.handleSkipClick
+          // handleRestartClick={this.props.handleRestartClick}
+        }),
+        React.createElement(Player, { team: "Red", gameStatus: this.props.gameStatus })
+      );
+    }
+  }]);
+
+  return InfoBoard;
+}(React.Component);
+
+var Player = function (_React$Component6) {
+  _inherits(Player, _React$Component6);
+
+  function Player() {
+    _classCallCheck(this, Player);
+
+    return _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).apply(this, arguments));
+  }
+
+  _createClass(Player, [{
+    key: "render",
+    value: function render() {
+      if (this.props.team === 'Blue') {
+        var allCards = this.props.gameStatus.blueTotal;
+        var cardsLeft = allCards - this.props.gameStatus.blueRevealed;
+      } else {
+        var allCards = this.props.gameStatus.redTotal;
+        var cardsLeft = allCards - this.props.gameStatus.redRevealed;
+      }
+      return React.createElement(
+        "div",
+        { className: "scoreboard" },
+        React.createElement(
+          "h3",
+          null,
+          this.props.team,
+          " Team's Scores:"
+        ),
+        React.createElement(
+          "table",
+          null,
+          React.createElement(
+            "tbody",
+            null,
+            React.createElement(
+              "tr",
+              null,
+              React.createElement(
+                "td",
+                null,
+                "All cards:"
+              ),
+              React.createElement(
+                "td",
+                null,
+                allCards
+              )
+            ),
+            React.createElement(
+              "tr",
+              null,
+              React.createElement(
+                "td",
+                null,
+                "Cards left:"
+              ),
+              React.createElement(
+                "td",
+                null,
+                cardsLeft
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return Player;
+}(React.Component);
+
+var AddWords = function (_React$Component7) {
+  _inherits(AddWords, _React$Component7);
+
+  function AddWords(props) {
+    _classCallCheck(this, AddWords);
+
+    var _this10 = _possibleConstructorReturn(this, (AddWords.__proto__ || Object.getPrototypeOf(AddWords)).call(this, props));
+
+    _this10.state = {
+      valueList: 'built-in'
+    }, _this10.handleWordListChange = _this10.handleWordListChange.bind(_this10);
+    return _this10;
+  }
+
+  _createClass(AddWords, [{
+    key: "handleWordListChange",
+    value: function handleWordListChange(event) {
+      var _this11 = this;
+
+      this.setState({
+        valueList: event.target.value
+      }, function () {
+        return console.log(_this11.state.valueList);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this12 = this;
+
+      return React.createElement(
+        "div",
+        { className: "addwords-container" },
+        React.createElement(
+          "div",
+          { className: "restartgame" },
+          React.createElement(
+            "h4",
+            null,
+            "Restart the game:"
+          ),
+          React.createElement("br", null),
+          React.createElement(
+            "form",
+            { onSubmit: function onSubmit(e) {
+                e.preventDefault();
+                _this12.props.handleRestartSubmit(_this12.state.valueList);
+              } },
+            React.createElement(
+              "label",
+              null,
+              "Choose a list:",
+              React.createElement(
+                "select",
+                { value: this.state.valueList, onChange: this.handleWordListChange },
+                React.createElement(
+                  "option",
+                  { value: "built-in" },
+                  "Built-in"
+                ),
+                React.createElement(
+                  "option",
+                  { value: "rita1" },
+                  "Rita1"
+                )
+              )
+            ),
+            React.createElement("br", null),
+            React.createElement("input", { type: "submit", value: "Restart" })
+          )
+        )
+      );
+    }
+  }]);
+
+  return AddWords;
+}(React.Component);
+
+var Game = function (_React$Component8) {
+  _inherits(Game, _React$Component8);
 
   function Game(props) {
     _classCallCheck(this, Game);
 
-    var _this10 = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
+    var _this13 = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-    _this10.state = {
+    _this13.state = {
       isBluesTurn: true,
       cards: [],
-      isRevealButtonOn: false
+      isRevealButtonOn: false,
+      gameStatus: {
+        redTotal: 0,
+        redRevealed: 0,
+        blueTotal: 0,
+        blueRevealed: 0
+      }
     };
-    _this10.handleRevealClick = _this10.handleRevealClick.bind(_this10);
-    _this10.handleCardClick = _this10.handleCardClick.bind(_this10);
-    _this10.handleSkipClick = _this10.handleSkipClick.bind(_this10);
-    _this10.handleRestartClick = _this10.handleRestartClick.bind(_this10);
-    return _this10;
+    _this13.handleRevealClick = _this13.handleRevealClick.bind(_this13);
+    _this13.handleCardClick = _this13.handleCardClick.bind(_this13);
+    _this13.handleRestartSubmit = _this13.handleRestartSubmit.bind(_this13);
+    return _this13;
   }
 
   _createClass(Game, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this11 = this;
+      this.fetchWords('/getwords');
+    }
+  }, {
+    key: "fetchWords",
+    value: function fetchWords(url) {
+      var _this14 = this;
 
-      fetch('/getwords', {
+      fetch(url, {
         method: 'GET'
       }).then(function (response) {
         return response.json();
       }).then(function (result) {
-        console.log('result', result);
+        var isBluesTurn = result[24].color === 'blue' ? true : false;
+        fisherYatesShuffle(result);
         var newShuffle = [[], [], [], [], []];
         for (var i = 0; i < result.length; i++) {
-          result[i].isGuessed = false;
-          if (i < 5) {
-            newShuffle[0].push(result[i]);
-          } else if (i < 10) {
-            newShuffle[1].push(result[i]);
-          } else if (i < 15) {
-            newShuffle[2].push(result[i]);
-          } else if (i < 20) {
-            newShuffle[3].push(result[i]);
-          } else {
-            newShuffle[4].push(result[i]);
-          }
+          result[i].isRevealed = false;
+          // adding it vertically
+          newShuffle[i % 5].push(result[i]);
         }
-        _this11.setState({
-          // isBluesTurn: result.isBluesTurn,
+        _this14.setState({
+          gameStatus: {
+            redTotal: isBluesTurn ? 8 : 9,
+            blueTotal: isBluesTurn ? 9 : 8,
+            blueRevealed: 0,
+            redRevealed: 0
+          },
+          isBluesTurn: isBluesTurn,
           cards: newShuffle
-        }, function () {
-          return console.log(_this11.state.cards);
         });
       });
     }
   }, {
     key: "handleRevealClick",
     value: function handleRevealClick() {
-      var _this12 = this;
+      var _this15 = this;
 
       this.setState({
         isRevealButtonOn: !this.state.isRevealButtonOn
       }, function () {
-        return console.log(_this12.state.isRevealButtonOn);
+        return console.log(_this15.state.isRevealButtonOn);
       });
     }
   }, {
-    key: "handleSkipClick",
-    value: function handleSkipClick() {
-      var _this13 = this;
-
-      this.setState({
-        isBluesTurn: !this.state.isBluesTurn
-      }, function () {
-        return console.log(_this13.state.isBluesTurn);
-      });
-    }
-  }, {
-    key: "handleRestartClick",
-    value: function handleRestartClick() {
-      console.log('shuffle a new board with new words and new colors and set isGuessed to false and set state to new board');
+    key: "handleRestartSubmit",
+    value: function handleRestartSubmit(valueList) {
+      this.fetchWords("/collections/" + valueList);
     }
   }, {
     key: "handleCardClick",
     value: function handleCardClick(indexRow, indexCol) {
-      var _this14 = this;
+      var _this16 = this;
 
-      console.log(indexRow, indexCol);
-      console.log(this.state.cards[indexRow][indexCol]);
       newCards = this.state.cards.slice();
-      newCards[indexRow][indexCol].isGuessed = true;
+      newCards[indexRow][indexCol].isRevealed = true;
+      var color = newCards[indexRow][indexCol].color;
+      var currentBlueNumber = this.state.gameStatus.blueRevealed;
+      var currentRedNumber = this.state.gameStatus.redRevealed;
       this.setState({
+        gameStatus: {
+          blueRevealed: color === 'blue' ? currentBlueNumber + 1 : currentBlueNumber,
+          redRevealed: color === 'red' ? currentRedNumber + 1 : currentRedNumber,
+          redTotal: this.state.gameStatus.redTotal,
+          blueTotal: this.state.gameStatus.blueTotal
+        },
         cards: newCards
       }, function () {
-        return console.log(_this14.state.cards);
+        return console.log(_this16.state.gameStatus);
       });
     }
   }, {
@@ -400,7 +485,12 @@ var Game = function (_React$Component7) {
           React.createElement(
             "h1",
             null,
-            "Codenames"
+            "Codebreakers"
+          ),
+          React.createElement(
+            "h5",
+            null,
+            "(a.k.a. Codenames)"
           )
         ),
         React.createElement(Board, {
@@ -409,10 +499,12 @@ var Game = function (_React$Component7) {
           cards: this.state.cards }),
         React.createElement(InfoBoard, {
           isBluesTurn: this.state.isBluesTurn,
-          handleRevealClick: this.handleRevealClick,
-          handleSkipClick: this.handleSkipClick,
-          handleRestartClick: this.handleRestartClick,
-          cards: this.state.cards }),
+          handleRevealClick: this.handleRevealClick
+          // handleSkipClick={this.handleSkipClick}
+          // handleRestartClick={this.handleRestartClick}
+          , cards: this.state.cards,
+          gameStatus: this.state.gameStatus }),
+        React.createElement(AddWords, { handleRestartSubmit: this.handleRestartSubmit }),
         React.createElement(Rules, null)
       );
     }
@@ -422,4 +514,11 @@ var Game = function (_React$Component7) {
 }(React.Component);
 
 ReactDOM.render(React.createElement(Game, null), document.getElementById('app'));
+
+// winning message + logic :
+// if black other team won, if no cards left red or blue, team won
+
+// mesage for if yellow -> other team's turn
+
+// adding hints
 //# sourceMappingURL=app.js.map
