@@ -94,7 +94,12 @@ body {
 }
 
 .scoreboard {
-  background-color: linen
+  background-color: linen;
+}
+
+.statusmessage {
+  font-size: 28px;
+  margin-top: 10px;
 }
 
 button, input[type=submit] {
@@ -104,7 +109,7 @@ button, input[type=submit] {
   cursor: pointer;
   border: 2px solid rgb(122, 139, 155);
   padding: 10px 20px;
-  margin-top: 30px;
+  margin-top: 15px;
   border-radius: 5px;
   font-size: 18px;
 }
@@ -123,6 +128,19 @@ button, input[type=submit] {
 
 .flexcontainer table {
   margin: 0 auto;
+}
+
+#hint {
+  margin-top: 30px;
+}
+
+.playerturn {
+  margin-bottom: 10px;
+}
+
+.hintwords {
+  list-style-type: none;
+  padding: 0;
 }
 
 /* Addwords CSS */

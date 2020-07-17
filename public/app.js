@@ -160,20 +160,52 @@ var Card = function (_React$Component3) {
 var Info = function (_React$Component4) {
   _inherits(Info, _React$Component4);
 
-  function Info() {
+  function Info(props) {
     _classCallCheck(this, Info);
 
-    return _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).apply(this, arguments));
+    var _this6 = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props));
+
+    _this6.state = {
+      hintValue: '',
+      isBluesHint: true
+    }, _this6.handleHintInputChange = _this6.handleHintInputChange.bind(_this6);
+    _this6.setHintPlayer = _this6.setHintPlayer.bind(_this6);
+    return _this6;
   }
 
   _createClass(Info, [{
+    key: "handleHintInputChange",
+    value: function handleHintInputChange(event) {
+      this.setState({
+        hintValue: event.target.value
+      });
+    }
+  }, {
+    key: "setHintPlayer",
+    value: function setHintPlayer(e) {
+      this.setState({
+        isBluesHint: e.target.value === 'Blue' ? true : false
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this7 = this;
 
+      console.log('inside render', this.state.isBluesHint);
+      if (this.props.gameStatus.redTotal === this.props.gameStatus.redRevealed) {
+        var message = 'Red Team Won!';
+      } else if (this.props.gameStatus.blueTotal === this.props.gameStatus.blueRevealed) {
+        var message = 'Blue Team Won!';
+      }
       return React.createElement(
         "div",
         { className: "infoboard" },
+        React.createElement(
+          "h3",
+          { className: "statusmessage" },
+          message
+        ),
         React.createElement(
           "h3",
           { className: "playerturn" },
@@ -188,7 +220,35 @@ var Info = function (_React$Component4) {
             } },
           "Reveal"
         ),
-        React.createElement("br", null)
+        React.createElement("br", null),
+        React.createElement(
+          "form",
+          { id: "hint", onSubmit: function onSubmit(e) {
+              e.preventDefault();
+              _this7.props.handleHintSubmit(_this7.state.hintValue, _this7.state.isBluesHint);
+            } },
+          React.createElement(
+            "label",
+            { htmlFor: "hintinput" },
+            "Add a hint:"
+          ),
+          React.createElement("input", {
+            type: "text",
+            id: "hintinput",
+            name: "hintinput",
+            value: this.state.hintValue,
+            onChange: this.handleHintInputChange }),
+          React.createElement("br", null),
+          React.createElement(
+            "div",
+            { onChange: this.setHintPlayer },
+            React.createElement("input", { type: "radio", value: "Red", name: "player" }),
+            " Red",
+            React.createElement("input", { type: "radio", value: "Blue", name: "player" }),
+            " Blue"
+          ),
+          React.createElement("input", { type: "submit", value: "Submit" })
+        )
       );
     }
   }]);
@@ -199,26 +259,64 @@ var Info = function (_React$Component4) {
 var InfoBoard = function (_React$Component5) {
   _inherits(InfoBoard, _React$Component5);
 
-  function InfoBoard() {
+  function InfoBoard(props) {
     _classCallCheck(this, InfoBoard);
 
-    return _possibleConstructorReturn(this, (InfoBoard.__proto__ || Object.getPrototypeOf(InfoBoard)).apply(this, arguments));
+    var _this8 = _possibleConstructorReturn(this, (InfoBoard.__proto__ || Object.getPrototypeOf(InfoBoard)).call(this, props));
+
+    _this8.state = {
+      hintwords: {
+        'Red': [],
+        'Blue': []
+      }
+    };
+    _this8.handleHintSubmit = _this8.handleHintSubmit.bind(_this8);
+    return _this8;
   }
 
   _createClass(InfoBoard, [{
+    key: "handleHintSubmit",
+    value: function handleHintSubmit(word, isBluesHint) {
+      if (isBluesHint) {
+        var wordArray = this.state.hintwords['Blue'].slice();
+        wordArray.push(word);
+        this.setState({
+          hintwords: {
+            'Red': this.state.hintwords['Red'],
+            'Blue': wordArray
+          }
+        });
+      } else {
+        var wordArray = this.state.hintwords['Red'].slice();
+        wordArray.push(word);
+        this.setState({
+          hintwords: {
+            'Red': wordArray,
+            'Blue': this.state.hintwords['Blue']
+          }
+        });
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       return React.createElement(
         "div",
         { className: "flexcontainer" },
-        React.createElement(Player, { team: "Blue", gameStatus: this.props.gameStatus }),
+        React.createElement(Player, {
+          team: "Blue",
+          hintWords: this.state.hintwords['Blue'],
+          gameStatus: this.props.gameStatus }),
         React.createElement(Info, {
+          handleHintSubmit: this.handleHintSubmit,
+          gameStatus: this.props.gameStatus,
           isBluesTurn: this.props.isBluesTurn,
-          handleRevealClick: this.props.handleRevealClick,
-          handleSkipClick: this.props.handleSkipClick
-          // handleRestartClick={this.props.handleRestartClick}
+          handleRevealClick: this.props.handleRevealClick
         }),
-        React.createElement(Player, { team: "Red", gameStatus: this.props.gameStatus })
+        React.createElement(Player, {
+          team: "Red",
+          hintWords: this.state.hintwords['Red'],
+          gameStatus: this.props.gameStatus })
       );
     }
   }]);
@@ -289,6 +387,23 @@ var Player = function (_React$Component6) {
               )
             )
           )
+        ),
+        React.createElement("br", null),
+        React.createElement(
+          "p",
+          null,
+          "Hints"
+        ),
+        React.createElement(
+          "ul",
+          { className: "hintwords" },
+          this.props.hintWords.map(function (word) {
+            return React.createElement(
+              "li",
+              null,
+              word
+            );
+          })
         )
       );
     }
@@ -388,7 +503,7 @@ var AddWords = function (_React$Component7) {
                 "select",
                 { value: this.state.valueSelect, onChange: this.handleCollectionChange },
                 this.props.collections.filter(function (obj) {
-                  return obj.collection !== 'Built-In';
+                  return obj.collection !== 'built-in';
                 }).map(function (option, index) {
                   return React.createElement(
                     "option",
@@ -428,7 +543,7 @@ var AddWords = function (_React$Component7) {
             React.createElement(
               "label",
               null,
-              "Choose a list (has to have at least 25 words):",
+              "Choose a list (>25 words):",
               React.createElement(
                 "select",
                 { value: this.state.valueList, onChange: this.handleWordListChange },
@@ -472,7 +587,8 @@ var Game = function (_React$Component8) {
         blueTotal: 0,
         blueRevealed: 0
       },
-      collections: []
+      collections: [],
+      isRestarted: 0
     };
     _this12.handleRevealClick = _this12.handleRevealClick.bind(_this12);
     _this12.handleCardClick = _this12.handleCardClick.bind(_this12);
@@ -543,6 +659,9 @@ var Game = function (_React$Component8) {
     key: "handleRestartSubmit",
     value: function handleRestartSubmit(valueList) {
       this.fetchWords("/collections/" + valueList);
+      this.setState({
+        isRestarted: this.state.isRestarted + 1
+      });
     }
   }, {
     key: "handleAddWordSubmit",
@@ -556,8 +675,6 @@ var Game = function (_React$Component8) {
         },
         body: JSON.stringify(data)
       });
-      // .then(response => response.json())
-      // .then(result => console.log(result))
     }
   }, {
     key: "handleCardClick",
@@ -567,9 +684,7 @@ var Game = function (_React$Component8) {
       newCards = this.state.cards.slice();
       newCards[indexRow][indexCol].isRevealed = true;
       var color = newCards[indexRow][indexCol].color;
-      // if (color === 'black') {
 
-      // }
       var currentBlueNumber = this.state.gameStatus.blueRevealed;
       var currentRedNumber = this.state.gameStatus.redRevealed;
       this.setState({
@@ -609,7 +724,9 @@ var Game = function (_React$Component8) {
           handleCardClick: this.handleCardClick,
           cards: this.state.cards }),
         React.createElement(InfoBoard, {
-          isBluesTurn: this.state.isBluesTurn,
+          key: this.state.isRestarted
+          // this forces react to create new instance and remount infoboard - hacky!!!!! needs better solution lifting the state up
+          , isBluesTurn: this.state.isBluesTurn,
           handleRevealClick: this.handleRevealClick,
           cards: this.state.cards,
           gameStatus: this.state.gameStatus }),
@@ -627,12 +744,10 @@ var Game = function (_React$Component8) {
 
 ReactDOM.render(React.createElement(Game, null), document.getElementById('app'));
 
-// winning message + logic :
-// if black other team won, if no cards left red or blue, team won
-
-// mesage for if yellow -> other team's turn
-
-// adding hints
-
-// form field add word -> change color
+// More to do:
+// fix the design - mobile first!!!
+// refactor mostly addwords and handleinputchange functions - messy
+// figure out a better way to delete hints when restart
+// code for codemasters
+// message if added words, refresh list
 //# sourceMappingURL=app.js.map

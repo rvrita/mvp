@@ -68,35 +68,116 @@ class Card extends React.Component {
 }
 
 class Info extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hintValue: '',
+      isBluesHint: true
+    },
+    this.handleHintInputChange = this.handleHintInputChange.bind(this);
+    this.setHintPlayer = this.setHintPlayer.bind(this);
+  }
+
+  handleHintInputChange(event) {
+    this.setState({
+      hintValue: event.target.value
+    });
+  }
+
+  setHintPlayer(e) {
+    this.setState({
+      isBluesHint: e.target.value === 'Blue' ? true : false
+    })
+  }
+
   render() {
+    console.log('inside render', this.state.isBluesHint)
+    if (this.props.gameStatus.redTotal === this.props.gameStatus.redRevealed) {
+      var message = 'Red Team Won!'
+    } else if (this.props.gameStatus.blueTotal === this.props.gameStatus.blueRevealed) {
+      var message = 'Blue Team Won!'
+    }
     return (
       <div className="infoboard">
+        <h3 className="statusmessage">{message}</h3>
         <h3 className="playerturn">{this.props.isBluesTurn ? 'Blue' : 'Red'} Team starts</h3>
-        {/* <button className="skipbutton" onClick={(e) => {
-          e.preventDefault();
-          this.props.handleSkipClick();
-        }}>Skip</button><br /> */}
         <button className="revealbutton" onClick={(e) => {
           e.preventDefault();
           this.props.handleRevealClick();
         }}>Reveal</button><br />
+        <form id="hint" onSubmit={(e) => {
+          e.preventDefault();
+          this.props.handleHintSubmit(this.state.hintValue, this.state.isBluesHint)
+        }}>
+          <label htmlFor="hintinput">Add a hint:</label>
+          <input
+            type="text"
+            id="hintinput"
+            name="hintinput"
+            value={this.state.hintValue}
+            onChange={this.handleHintInputChange} /><br />
+          <div onChange={this.setHintPlayer}>
+            <input type="radio" value="Red" name="player" /> Red
+            <input type="radio" value="Blue" name="player" /> Blue
+          </div>
+          <input type="submit" value="Submit" />
+        </form>
       </div>
     )
   }
 }
 
 class InfoBoard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hintwords: {
+        'Red': [],
+        'Blue': []
+      }
+    };
+    this.handleHintSubmit = this.handleHintSubmit.bind(this);
+  }
+
+  handleHintSubmit(word, isBluesHint) {
+    if (isBluesHint) {
+      var wordArray = this.state.hintwords['Blue'].slice();
+      wordArray.push(word);
+      this.setState({
+        hintwords: {
+          'Red': this.state.hintwords['Red'],
+          'Blue': wordArray
+        }
+      })
+    } else {
+      var wordArray = this.state.hintwords['Red'].slice();
+      wordArray.push(word);
+      this.setState({
+        hintwords: {
+          'Red': wordArray,
+          'Blue': this.state.hintwords['Blue']
+        }
+      })
+    }
+  }
+
   render() {
     return (
       <div className="flexcontainer">
-        <Player team='Blue' gameStatus={this.props.gameStatus} />
+        <Player
+          team='Blue'
+          hintWords={this.state.hintwords['Blue']}
+          gameStatus={this.props.gameStatus} />
         <Info
+          handleHintSubmit={this.handleHintSubmit}
+          gameStatus={this.props.gameStatus}
           isBluesTurn={this.props.isBluesTurn}
           handleRevealClick={this.props.handleRevealClick}
-          handleSkipClick={this.props.handleSkipClick}
-        // handleRestartClick={this.props.handleRestartClick}
         />
-        <Player team='Red' gameStatus={this.props.gameStatus} />
+        <Player
+          team='Red'
+          hintWords={this.state.hintwords['Red']}
+          gameStatus={this.props.gameStatus} />
       </div>
     )
   }
@@ -125,19 +206,13 @@ class Player extends React.Component {
               <td>{cardsLeft}</td>
             </tr>
           </tbody>
-        </table>
-        {/* <p>Hints</p>
-          <ul>
-            <li>color</li>
-            <li>animal</li>
-          </ul>
-          <form>
-            <label for="hint">Add a hint:</label>
-            <input type="text" id="hint" name="hint"/><br/>
-            <label for="numberofwords">Number of words:</label>
-            <input type="text" id="numberofwords" name="numberofwords"/>
-            <input type="submit" value="Submit"/>
-          </form> */}
+        </table><br />
+        <p>Hints</p>
+        <ul className="hintwords">
+          {this.props.hintWords.map(word =>
+          <li>{word}</li>
+            )}
+        </ul>
       </div>
     )
   }
@@ -202,9 +277,9 @@ class AddWords extends React.Component {
             </label><br />
             <label>Or add to an existing list:
             <select value={this.state.valueSelect} onChange={this.handleCollectionChange}>
-              {this.props.collections.filter(obj => obj.collection !== 'Built-In').map((option,index) => {
-                return <option key={index} value={option.collection}>{option.collection}</option>
-              })}
+                {this.props.collections.filter(obj => obj.collection !== 'built-in').map((option, index) => {
+                  return <option key={index} value={option.collection}>{option.collection}</option>
+                })}
               </select>
             </label><br /><br />
             <label>Word:
@@ -219,14 +294,12 @@ class AddWords extends React.Component {
             e.preventDefault();
             this.props.handleRestartSubmit(this.state.valueList);
           }}>
-            <label>Choose a list (has to have at least 25 words):
+            <label>Choose a list (>25 words):
             <select value={this.state.valueList} onChange={this.handleWordListChange}>
-              {this.props.collections.filter(obj => obj.count > 25).map((option,index)=> {
+                {this.props.collections.filter(obj => obj.count > 25).map((option, index) => {
                   return <option key={index} value={option.collection}>{option.collection}</option>;
-                }
-
-              )}
-            </select>
+                })}
+              </select>
             </label><br />
             <input type="submit" value="Restart" />
           </form>
@@ -249,7 +322,8 @@ class Game extends React.Component {
         blueTotal: 0,
         blueRevealed: 0
       },
-      collections: []
+      collections: [],
+      isRestarted: 0
     }
     this.handleRevealClick = this.handleRevealClick.bind(this);
     this.handleCardClick = this.handleCardClick.bind(this);
@@ -303,6 +377,9 @@ class Game extends React.Component {
 
   handleRestartSubmit(valueList) {
     this.fetchWords(`/collections/${valueList}`);
+    this.setState({
+      isRestarted: this.state.isRestarted + 1
+    })
   }
 
   handleAddWordSubmit(word, list) {
@@ -315,17 +392,13 @@ class Game extends React.Component {
       },
       body: JSON.stringify(data)
     })
-    // .then(response => response.json())
-    // .then(result => console.log(result))
   }
 
   handleCardClick(indexRow, indexCol) {
     newCards = this.state.cards.slice();
     newCards[indexRow][indexCol].isRevealed = true;
     var color = newCards[indexRow][indexCol].color;
-    // if (color === 'black') {
 
-    // }
     var currentBlueNumber = this.state.gameStatus.blueRevealed;
     var currentRedNumber = this.state.gameStatus.redRevealed;
     this.setState({
@@ -351,6 +424,8 @@ class Game extends React.Component {
           handleCardClick={this.handleCardClick}
           cards={this.state.cards} />
         <InfoBoard
+          key={this.state.isRestarted}
+          // this forces react to create new instance and remount infoboard - hacky!!!!! needs better solution lifting the state up
           isBluesTurn={this.state.isBluesTurn}
           handleRevealClick={this.handleRevealClick}
           cards={this.state.cards}
@@ -367,14 +442,10 @@ class Game extends React.Component {
 
 ReactDOM.render(<Game />, document.getElementById('app'));
 
+// More to do:
+// fix the design - mobile first!!!
+// refactor mostly addwords and handleinputchange functions - messy
+// figure out a better way to delete hints when restart
+// code for codemasters
+// message if added words, refresh list
 
-
-
-// winning message + logic :
-// if black other team won, if no cards left red or blue, team won
-
-// mesage for if yellow -> other team's turn
-
-// adding hints
-
-// form field add word -> change color

@@ -4,7 +4,7 @@ USE codenames;
 
 DROP TABLE IF EXISTS vocabulary;
 CREATE TABLE vocabulary (
-  id INTEGER NOT NULL AUTO_INCREMENT,
+  -- id INTEGER NOT NULL AUTO_INCREMENT,
   word VARCHAR(255) NOT NULL,
   `collection` VARCHAR(255) NOT NULL DEFAULT 'built-in',
   PRIMARY KEY (word, collection)
