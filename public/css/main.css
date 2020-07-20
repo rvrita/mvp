@@ -192,6 +192,10 @@ select {
   background-color: linen;
 }
 
+.restartgame select {
+  margin-top: 10px;
+}
+
 /* Rules CSS */
 
 .rules {
